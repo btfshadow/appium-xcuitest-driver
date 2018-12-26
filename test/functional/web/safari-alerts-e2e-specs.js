@@ -28,7 +28,7 @@ describe('safari - alerts', function () {
       safariAllowPopups: true,
       nativeWebTap: true,
     }, SAFARI_CAPS);
-    driver = await initSession(caps);
+    driver = await initSession(caps, this);
   });
   after(async function () {
     await deleteSession();

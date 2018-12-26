@@ -60,12 +60,12 @@ describe('ReduceMotion', function () {
 
   if (!process.env.REAL_DEVICE) {
     it('should enable reduce motion', async function () {
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       (await getReduceMotion(driver)).should.eql('1');
     });
     it('should disable reduce motion', async function () {
       caps.reduceMotion = false;
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       (await getReduceMotion(driver)).should.eql('0');
     });
   }

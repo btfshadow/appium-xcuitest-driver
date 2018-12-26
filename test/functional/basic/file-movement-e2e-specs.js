@@ -18,7 +18,7 @@ if (!process.env.REAL_DEVICE && !process.env.CLOUD) {
 
     let driver;
     before(async function () {
-      driver = await initSession(UICATALOG_CAPS);
+      driver = await initSession(UICATALOG_CAPS, this);
     });
     after(async function () {
       await deleteSession();

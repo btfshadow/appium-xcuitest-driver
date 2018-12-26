@@ -20,7 +20,7 @@ describe('XCUITestDriver - gestures', function () {
 
   describe('dynamic gestures', function () {
     before(async function () {
-      driver = await initSession(UICATALOG_CAPS);
+      driver = await initSession(UICATALOG_CAPS, this);
     });
     beforeEach(async function () {
       await driver.back();
@@ -145,7 +145,8 @@ describe('XCUITestDriver - gestures', function () {
     });
     it('should double tap on an element', async function () {
       // FIXME: Multitouch does not work as expected in Xcode < 9.
-      if ((await xcode.getVersion(true)).major < 9) {
+      // cloud tests are run on Linux, so no Xcode version to check
+      if (!process.env.CLOUD && (await xcode.getVersion(true)).major < 9) {
         return this.skip();
       }
 
@@ -263,7 +264,7 @@ describe('XCUITestDriver - gestures', function () {
     before(async function () {
       driver = await initSession(_.defaults({
         tapWithShortPressDuration: 0.01
-      }, UICATALOG_CAPS));
+      }, UICATALOG_CAPS), this);
     });
     after(async function () {
       await deleteSession();

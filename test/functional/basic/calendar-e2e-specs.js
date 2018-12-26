@@ -8,7 +8,6 @@ chai.should();
 chai.use(chaiAsPromised);
 
 if (!process.env.REAL_DEVICE && !process.env.CLOUD) {
-
   describe('XCUITestDriver - calendar', function () {
     this.timeout(MOCHA_TIMEOUT);
 
@@ -24,7 +23,7 @@ if (!process.env.REAL_DEVICE && !process.env.CLOUD) {
 
     it('should authorize calendar access if calendarAccessAuthorized == true', async function () {
       caps.calendarAccessAuthorized = true;
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       let checkCalendarButton = await driver.elementByName('Check calendar authorized');
       await checkCalendarButton.click();
       await driver.elementByName('authorized');
@@ -32,7 +31,7 @@ if (!process.env.REAL_DEVICE && !process.env.CLOUD) {
 
     it('should disable calendar access if calendarAccessAuthorized == false', async function () {
       caps.calendarAccessAuthorized = false;
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       let checkCalendarButton = await driver.elementByName('Check calendar authorized');
       await checkCalendarButton.click();
       await driver.elementByName('not authorized');

@@ -16,7 +16,7 @@ describe('XCUITestDriver - long tests', function () {
   let driver;
   before(async function () {
     let caps = Object.assign({}, UICATALOG_CAPS, {maxTypingFrequency: 20});
-    driver = await initSession(caps);
+    driver = await initSession(caps, this);
   });
   after(async function () {
     await deleteSession();

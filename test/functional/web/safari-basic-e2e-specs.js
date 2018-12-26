@@ -33,7 +33,7 @@ describe('Safari', function () {
       let expectedTitle = process.env.REAL_DEVICE
         ? 'Appium: Mobile App Automation Made Awesome.'
         : 'Appium/welcome';
-      driver = await initSession(SAFARI_CAPS);
+      driver = await initSession(SAFARI_CAPS, this);
       let title = await spinTitle(driver);
       title.should.equal(expectedTitle);
     });
@@ -42,7 +42,7 @@ describe('Safari', function () {
       let caps = _.defaults({
         safariInitialUrl: GUINEA_PIG_PAGE
       }, SAFARI_CAPS);
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       let title = await spinTitle(driver);
       const expectedTitle = 'I am a page title';
       title.should.equal(expectedTitle);
@@ -55,7 +55,7 @@ describe('Safari', function () {
         safariIgnoreFraudWarning: false,
         safariInitialUrl: GUINEA_PIG_PAGE,
         showSafariConsoleLog: true,
-      }, caps));
+      }, caps), this);
     });
     after(async function () {
       await deleteSession();
@@ -375,7 +375,7 @@ describe('Safari', function () {
       beforeEach(async function () {
         driver = await initSession(_.defaults({
           safariIgnoreFraudWarning: false,
-        }, caps));
+        }, caps), this);
       });
       afterEach(async function () {
         await deleteSession();
@@ -390,7 +390,7 @@ describe('Safari', function () {
       beforeEach(async function () {
         driver = await initSession(_.defaults({
           safariIgnoreFraudWarning: true,
-        }, caps));
+        }, caps), this);
       });
       afterEach(async function () {
         await deleteSession();

@@ -51,19 +51,19 @@ describe('XCUITestDriver', function () {
 
   if (!process.env.REAL_DEVICE) {
     it('should start and stop a session', async function () {
-      driver = await initSession(baseCaps);
+      driver = await initSession(baseCaps, this);
       let els = await driver.elementsByClassName("XCUIElementTypeWindow");
       els.length.should.be.at.least(1);
     });
 
     it('should start and stop a session doing pre-build', async function () {
-      driver = await initSession(Object.assign({prebuildWDA: true}, baseCaps));
+      driver = await initSession(Object.assign({prebuildWDA: true}, baseCaps), this);
       let els = await driver.elementsByClassName("XCUIElementTypeWindow");
       els.length.should.be.at.least(1);
     });
 
     it('should start and stop a session doing simple build-test', async function () {
-      driver = await initSession(Object.assign({useSimpleBuildTest: true}, baseCaps));
+      driver = await initSession(Object.assign({useSimpleBuildTest: true}, baseCaps), this);
       let els = await driver.elementsByClassName("XCUIElementTypeWindow");
       els.length.should.be.at.least(1);
     });
@@ -71,27 +71,27 @@ describe('XCUITestDriver', function () {
     it('should start and stop a session with only bundle id', async function () {
       let localCaps = Object.assign({}, caps, {bundleId: 'com.example.apple-samplecode.UICatalog'});
       localCaps.app = null;
-      await initSession(localCaps).should.not.eventually.be.rejected;
+      await initSession(localCaps, this).should.not.eventually.be.rejected;
     });
 
     it('should start and stop a session with only bundle id when no sim is running', async function () {
       await killAllSimulators();
       let localCaps = Object.assign({}, caps, {bundleId: 'com.example.apple-samplecode.UICatalog'});
       localCaps.app = null;
-      await initSession(localCaps).should.not.eventually.be.rejected;
+      await initSession(localCaps, this).should.not.eventually.be.rejected;
     });
 
     it('should fail to start and stop a session if unknown bundle id used', async function () {
       let localCaps = Object.assign({}, caps, {bundleId: 'io.blahblahblah.blah'});
       localCaps.app = null;
-      await initSession(localCaps).should.eventually.be.rejected;
+      await initSession(localCaps, this).should.eventually.be.rejected;
     });
 
     it('should fail to start and stop a session if unknown bundle id used when no sim is running', async function () {
       await killAllSimulators();
       let localCaps = Object.assign({}, caps, {bundleId: 'io.blahblahblah.blah'});
       localCaps.app = null;
-      await initSession(localCaps).should.eventually.be.rejected;
+      await initSession(localCaps, this).should.eventually.be.rejected;
     });
 
     describe('WebdriverAgent port', function () {
@@ -103,7 +103,7 @@ describe('XCUITestDriver', function () {
           useNewWDA: true,
         });
         localCaps.wdaLocalPort = null;
-        driver = await initSession(localCaps);
+        driver = await initSession(localCaps, this);
         let logs = await driver.log('syslog');
         logs.some((line) => line.message.includes(':8100<-')).should.be.true;
       });
@@ -113,7 +113,7 @@ describe('XCUITestDriver', function () {
           wdaLocalPort: 6000,
           useNewWDA: true,
         });
-        driver = await initSession(localCaps);
+        driver = await initSession(localCaps, this);
         let logs = await driver.log('syslog');
         logs.some((line) => line.message.includes(':8100<-')).should.be.false;
         logs.some((line) => line.message.includes(':6000<-')).should.be.true;
@@ -125,7 +125,7 @@ describe('XCUITestDriver', function () {
         let localCaps = _.defaults({
           orientation: initialOrientation
         }, caps);
-        driver = await initSession(localCaps);
+        driver = await initSession(localCaps, this);
 
         let orientation = await driver.getOrientation();
         orientation.should.eql(initialOrientation);
@@ -151,7 +151,7 @@ describe('XCUITestDriver', function () {
 
         await killAllSimulators();
         let simsBefore = await getNumSims();
-        await initSession(caps);
+        await initSession(caps, this);
 
         let simsDuring = await getNumSims();
 
@@ -178,7 +178,7 @@ describe('XCUITestDriver', function () {
 
         (await sim.isRunning()).should.be.true;
         let simsBefore = await getNumSims();
-        await initSession(caps);
+        await initSession(caps, this);
         let simsDuring = await getNumSims();
         await deleteSession();
         let simsAfter = await getNumSims();
@@ -209,7 +209,7 @@ describe('XCUITestDriver', function () {
 
         (await sim.isRunning()).should.be.true;
         let simsBefore = await getNumSims();
-        await initSession(caps);
+        await initSession(caps, this);
         let simsDuring = await getNumSims();
         await deleteSession();
         let simsAfter = await getNumSims();
@@ -229,7 +229,7 @@ describe('XCUITestDriver', function () {
           udid: 'some-random-udid'
         }, UICATALOG_SIM_CAPS);
 
-        await initSession(caps).should.be.rejectedWith('Unknown device or simulator UDID');
+        await initSession(caps, this).should.be.rejectedWith('Unknown device or simulator UDID');
       });
 
       it('with non-existent udid: throws an error', async function () {
@@ -237,7 +237,7 @@ describe('XCUITestDriver', function () {
         let udid = 'a77841db006fb1762fee0bb6a2477b2b3e1cfa7d';
         let caps = _.defaults({udid}, UICATALOG_SIM_CAPS);
 
-        await initSession(caps).should.be.rejectedWith('Unknown device or simulator UDID');
+        await initSession(caps, this).should.be.rejectedWith('Unknown device or simulator UDID');
       });
 
       it('with noReset set to true: leaves sim booted', async function () {
@@ -258,7 +258,7 @@ describe('XCUITestDriver', function () {
         }, UICATALOG_SIM_CAPS);
 
         let simsBefore = await getNumSims();
-        await initSession(caps);
+        await initSession(caps, this);
         let simsDuring = await getNumSims();
         await deleteSession();
         let simsAfter = await getNumSims();
@@ -276,7 +276,7 @@ describe('XCUITestDriver', function () {
     describe('event timings', function () {
       it('should include event timings if cap is used', async function () {
         let newCaps = Object.assign({}, caps, {eventTimings: true});
-        driver = await initSession(newCaps);
+        driver = await initSession(newCaps, this);
         let res = await driver.sessionCapabilities();
         should.exist(res.events);
         should.exist(res.events.newSessionStarted);
@@ -287,13 +287,13 @@ describe('XCUITestDriver', function () {
     // real device tests
     describe('handle multiple back-to-back sessions', function () {
       it('should not fail when the new session is initiated', async function () {
-        await initSession(UICATALOG_CAPS);
+        await initSession(UICATALOG_CAPS, this);
         await deleteSession();
 
-        await initSession(UICATALOG_CAPS);
+        await initSession(UICATALOG_CAPS, this);
         await deleteSession();
 
-        await initSession(UICATALOG_CAPS);
+        await initSession(UICATALOG_CAPS, this);
         await deleteSession();
       });
     });

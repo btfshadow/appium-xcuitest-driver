@@ -3,6 +3,32 @@ import request from 'request-promise';
 import { startServer } from '../../..';
 import { util } from 'appium-support';
 import patchDriverWithEvents from './ci-metrics';
+import SauceLabs from 'saucelabs';
+import B from 'bluebird';
+
+
+let updateSauceJob;
+if (process.env.CLOUD) {
+  const sauceUserName = process.env.SAUCE_USERNAME;
+  const sauceAccessKey = process.env.SAUCE_ACCESS_KEY;
+  if (sauceUserName && sauceAccessKey) {
+    const saucelabs = new SauceLabs({
+      username: sauceUserName,
+      password: sauceAccessKey,
+    });
+    updateSauceJob = B.promisify(saucelabs.updateJob, {context: saucelabs});
+  }
+}
+
+afterEach(function () {
+  // after each test, update the suites' status, for reporting to Sauce Labs
+  for (const suite of this.test.parent.suites) {
+    if (suite._appiumSuccess !== false) {
+      // if we have not already failed the suite, check the status of the current job
+      suite._appiumSuccess = this.currentTest.state === 'passed';
+    }
+  }
+});
 
 const {SAUCE_RDC, SAUCE_EMUSIM, CLOUD, CI_METRICS} = process.env;
 
@@ -65,7 +91,7 @@ async function initWDA (caps) {
   }
 }
 
-async function initSession (caps) {
+async function initSession (caps, mochaContext) {
   if (!CLOUD) {
     await initServer();
   }
@@ -86,10 +112,20 @@ async function initSession (caps) {
 
   await driver.setImplicitWaitTimeout(5000);
 
+  driver._mochaContext = mochaContext;
+
   return driver;
 }
 
 async function deleteSession () {
+  if (updateSauceJob && driver && driver._mochaContext) {
+    console.log('SUCCESS:', driver._mochaContext.test.parent._appiumSuccess);
+    updateSauceJob(driver.sessionID, {
+      passed: !!driver._mochaContext.test.parent._appiumSuccess,
+      name: driver._mochaContext.test.parent.title,
+    });
+  }
+
   try {
     await driver.quit();
   } catch (ign) {}

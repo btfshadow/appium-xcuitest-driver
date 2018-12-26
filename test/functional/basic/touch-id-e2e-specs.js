@@ -15,7 +15,7 @@ const MOCHA_RETRIES = process.env.CI ? 3 : 1;
 
 // touch id tests need to be on sims and need accessibility turned on
 if (!process.env.REAL_DEVICE && !process.env.CI && !process.env.CLOUD) {
-  describe('touchID() ', function () {
+  describe('touchID()', function () {
     this.timeout(MOCHA_TIMEOUT * 2);
     this.retries(MOCHA_RETRIES);
     let driver;
@@ -45,7 +45,7 @@ if (!process.env.REAL_DEVICE && !process.env.CI && !process.env.CLOUD) {
 
     describe('touchID enrollment functional tests applied to TouchId sample app', function () {
       beforeEach(async function () {
-        driver = await initSession(TOUCHIDAPP_CAPS);
+        driver = await initSession(TOUCHIDAPP_CAPS, this);
         await B.delay(2000); // Give the app a couple seconds to open
       });
 

@@ -102,7 +102,7 @@ describe('safari - execute -', function () {
         safariInitialUrl: GUINEA_PIG_PAGE,
         nativeWebTap: true,
       }, SAFARI_CAPS);
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
     });
     after(async function () {
       await deleteSession();
@@ -118,7 +118,7 @@ describe('safari - execute -', function () {
         nativeWebTap: true,
         enableAsyncExecuteFromHttps: true,
       }, SAFARI_CAPS);
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       await driver.get('https://google.com');
     });
     after(async function () {

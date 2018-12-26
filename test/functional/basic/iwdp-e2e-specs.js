@@ -26,14 +26,14 @@ if (process.env.REAL_DEVICE) {
 
     it('Should start a Safari session if "caps.startIWDP === true"', async function () {
       caps.startIWDP = true;
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
       await driver.source().should.not.be.rejected;
       await driver.quit();
     });
 
     it('Should not start a Safari session if "caps.startIWDP === false"', async function () {
       caps.startIWDP = false;
-      await initSession(caps).should.be.rejectedWith(/environment you requested was unavailable/);
+      await initSession(caps, this).should.be.rejectedWith(/environment you requested was unavailable/);
     });
   });
 }

@@ -14,7 +14,7 @@ describe('XCUITestDriver - alerts -', function () {
 
   let driver;
   before(async function () {
-    driver = await initSession(UICATALOG_CAPS);
+    driver = await initSession(UICATALOG_CAPS, this);
   });
   after(async function () {
     await deleteSession();

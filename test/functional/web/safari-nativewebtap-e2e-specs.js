@@ -69,7 +69,7 @@ describe('Safari', function () {
               deviceName,
               fullReset: true,
               noReset: false,
-            }, caps));
+            }, caps), this);
           } catch (err) {
             if (err.message.includes('Invalid device type') || err.message.includes('Incompatible device')) {
               skipped = true;

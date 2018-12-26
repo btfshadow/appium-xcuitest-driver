@@ -58,7 +58,7 @@ describe('Safari SSL', function () {
   });
 
   it('should open pages with untrusted certs if the cert was provided in desired capabilities', async function () {
-    driver = await initSession(caps);
+    driver = await initSession(caps, this);
     await driver.get(LOCAL_HTTPS_URL);
     let source = await driver.source();
     source.should.include('Arbitrary text');
@@ -85,7 +85,7 @@ describe('Safari SSL', function () {
     });
 
     before(async function () {
-      driver = await initSession(caps);
+      driver = await initSession(caps, this);
     });
 
     beforeEach(async function () {
